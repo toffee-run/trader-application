@@ -1,10 +1,15 @@
 {
-	"files": {
-		"includes": ["**", "!src/routeTree.gen.ts", "!!dist"]
-	},
-	"css": {
-		"parser": {
-			"tailwindDirectives": true
-		}
-	}
+  "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+  "files": {
+    "includes": [
+      "**/src/**/*",
+      "**/vite.config.ts",
+      "!**/src/routeTree.gen.ts",
+      "!**/src/styles.css",
+      "!**/src/components/ui/**/*"
+    ]
+  },
+  "css": { "parser": { "tailwindDirectives": true } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "javascript": { "formatter": { "quoteStyle": "double" } }
 }
