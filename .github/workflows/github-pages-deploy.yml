@@ -3,9 +3,20 @@ name: GitHub Pages Deploy
 on:
   push:
     branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  Build:
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -26,18 +37,23 @@ jobs:
       - name: Installing dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Configure Pages
+      - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v6
 
       - name: Build project
-        run: pnpm run build --base "${{ steps.pages.outputs.base_path }}/"
+        run: |
+          pnpm run build \
+          --site "${{ steps.pages.outputs.origin }}" \
+          --base "${{ steps.pages.outputs.base_path }}"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: dist/client
 
-  Deploy:
+  deploy:
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
 
@@ -51,4 +67,5 @@ jobs:
 
     steps:
       - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v5
